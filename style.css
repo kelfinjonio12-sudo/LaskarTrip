@@ -1,0 +1,1109 @@
+:root {
+      --primary: #2563eb;
+      --primary-soft: #e0ecff;
+      --accent: #22c55e;
+      --accent-soft: #d1fae5;
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #6b7280;
+      --border-soft: #e5e7eb;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.14);
+      --transition: 0.2s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* === HEADER BARU (DARK THEME) === */
+    .header-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      /* Background Gelap */
+      background: #1e293b; 
+      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      padding: 12px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: auto; /* Auto height untuk header baru */
+      min-height: 50px;
+    }
+
+    /* Logo Area */
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #ffffff 0%, #bfdbfe 100%);
+      color: #1e293b;
+      border-radius: 12px;
+      border-bottom-right-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .logo-text-group {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .logo-main {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    /* Navigation Right */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Currency Pill */
+    .pill-currency {
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .pill-currency:hover { border-color: #94a3b8; color: #fff; }
+
+    /* Menu Links */
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #e2e8f0;
+    }
+    .nav-menu a { position: relative; transition: 0.2s; }
+    .nav-menu a:hover { color: #fff; }
+
+    /* Best Deal Badge */
+    .badge-deal {
+      background: #334155;
+      color: #38bdf8;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 4px;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+
+    /* Dark Mode Toggle Button */
+    .btn-dark-toggle {
+      background: #f1f5f9;
+      color: #0f172a;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .btn-dark-toggle:hover { background: #e2e8f0; }
+
+    /* Auth Buttons */
+    .btn-auth-login {
+      background: #f8fafc;
+      color: #0f172a;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-auth-login:hover { background: #e2e8f0; }
+
+    .btn-auth-signup {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-auth-signup:hover { background: #1d4ed8; }
+
+    /* === Badge profil user di navbar === */
+    .user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #0f172a;             /* bisa kamu sesuaikan */
+    color: #f9fafb;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    }
+
+    .user-badge:hover {
+    background: #111827;
+    }
+
+    .user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #22c55e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    }
+
+    .user-name {
+    white-space: nowrap;
+    }
+
+    /* === END HEADER STYLES === */
+
+
+    /* === BODY (STYLE LAMA DIPERTAHANKAN) === */
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-main);
+      transition: background var(--transition), box-shadow var(--transition),
+        transform var(--transition), border-color var(--transition), color var(--transition);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #2563eb, #22c55e);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
+      border: none;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 32px 0 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: none;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr); 
+      justify-content: center;
+    }
+
+    .hero-grid > div {
+      max-width: 960px;      
+      margin: 0 auto;        
+    }
+
+    .hero-title,
+    .hero-sub {
+      text-align: center;
+    }
+
+    .search-wrapper {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-title {
+      font-size: clamp(26px, 3.2vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 12px;
+    }
+
+    .hero-title span {
+      color: var(--primary);
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 640px;      
+      margin: 0 auto 20px;   
+      text-align: center;    
+    }
+
+    /* SEARCH CARD */
+    .search-wrapper {
+      margin-top: 25px;
+    }
+
+    .search-card {
+     background: var(--surface);
+     border-radius: 48px;
+     box-shadow: var(--shadow-soft);
+     padding: 30px 28px 30px;
+     border: 1px solid rgba(226, 232, 240, 0.85);
+     width: 100%;
+     max-width: 1040px;
+    }
+
+    .search-tabs {
+      display: inline-flex;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--bg);
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .search-tab {
+      border: none;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background var(--transition), color var(--transition),
+        box-shadow var(--transition), transform var(--transition);
+    }
+
+    .search-tab span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #9ca3af;
+    }
+
+    .search-tab.active {
+      background: #fff;
+      color: var(--text-main);
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+      transform: translateY(-0.5px);
+    }
+
+    .search-tab.active span.dot {
+      background: var(--primary);
+    }
+
+    .driver-tabs {
+        display: inline-flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 12px;
+    }
+
+    .driver-tab {
+        border: none;
+        background: transparent;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .driver-tab.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .driver-pane {
+        display: none;
+    }
+
+    .driver-pane.active {
+        display: block;
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: 2.6fr 1.3fr 1.3fr 1.5fr; 
+      gap: 18px;
+      align-items: flex-end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .field-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .field-input {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 16px;       
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: #f9fafb;
+      font-size: 12px;
+      color: var(--text-main);
+      cursor: text;
+      transition: border-color var(--transition), box-shadow var(--transition),
+        background var(--transition), transform var(--transition);
+    }
+
+    .field-input input,
+    .field-input select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    .field-input:focus-within {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1);
+      transform: translateY(-0.5px);
+    }
+
+    .field-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #e5edff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .search-button-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-search {
+    width: 100%;
+    padding: 12px 18px;     
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #2563eb, #2563eb, #22c55e);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 13px 30px rgba(37, 99, 235, 0.4);
+    transition: transform var(--transition), box-shadow var(--transition),
+       filter var(--transition);
+    }
+
+    .btn-search:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 38px rgba(37, 99, 235, 0.5);
+      filter: brightness(1.02);
+    }
+
+    .search-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* FEATURE SECTION */
+    .section {
+      padding: 26px 0 0;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .section-link {
+      font-size: 12px;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+      transition: box-shadow var(--transition), transform var(--transition),
+        border-color var(--transition), background var(--transition);
+    }
+
+    .feature-card:hover {
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+      transform: translateY(-3px);
+      border-color: rgba(37, 99, 235, 0.5);
+      background: #f9fafb;
+    }
+
+    .feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--primary);
+    }
+
+    .feature-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* DESTINATIONS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .destination-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--transition), box-shadow var(--transition),
+        border-color var(--transition);
+    }
+
+    .destination-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.14);
+      border-color: rgba(37, 99, 235, 0.5);
+    }
+
+    .destination-image {
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .destination-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.5), transparent 40%);
+    }
+
+    .destination-badge {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f9fafb;
+      font-size: 11px;
+    }
+
+    .destination-body {
+      padding: 11px 12px 11px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .destination-title {
+      font-weight: 600;
+    }
+
+    .destination-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .price {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    /* HOW IT WORKS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .step-card {
+      background: #f9fafb;
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .step-number {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: var(--primary);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 28px;
+      padding: 18px 0 28px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1.1fr 1.1fr auto;
+      gap: 16px;
+    }
+
+    .footer-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-links a {
+      cursor: pointer;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-brand {
+      max-width: 260px;
+    }
+
+    .footer-bottom {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .socmed {
+      display: flex;
+      gap: 8px;
+    }
+
+    .socmed span {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition),
+        border-color var(--transition), transform var(--transition);
+    }
+
+    .socmed span:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .search-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .feature-grid,
+      .card-grid,
+      .steps-grid,
+      .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .navbar {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .nav-right { 
+        flex-wrap: wrap; 
+        justify-content: center; 
+        gap: 10px; 
+      }
+      .nav-links {
+        display: none;
+      }
+      .hero {
+        padding-top: 18px;
+      }
+      .search-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .feature-grid,
+      .card-grid,
+      .steps-grid,
+      .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .search-card {
+        padding: 18px 24px 20px;
+      }
+    }
+
+    /* =========================
+   DARK MODE (SOFT)
+   ========================= */
+
+/* Latar belakang umum */
+body.dark-mode {
+  background: #020617;        /* midnight navy, tidak terlalu hitam */
+  color: #e5e7eb;
+}
+
+/* Navbar + header */
+body.dark-mode header,
+body.dark-mode .lt-navbar {
+  background: #020617;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Section utama & hero */
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode .hero-section,
+body.dark-mode .hero-wrapper {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+/* Judul & teks utama */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode .hero-title {
+  color: #f9fafb;
+}
+
+body.dark-mode p,
+body.dark-mode .hero-subtitle,
+body.dark-mode .section-subtitle {
+  color: #9ca3af;
+}
+
+/* KOTAK PENCARIAN di hero (card besar) */
+body.dark-mode .search-shell,
+body.dark-mode .search-card,
+body.dark-mode .booking-card {
+  background: #020617;
+  border: 1px solid #1f2937;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.7);
+}
+
+/* CARD “Kenapa pilih Laskar Trip”, “Cara kerja Laskar Trip”, dst */
+body.dark-mode .why-card,
+body.dark-mode .feature-card,
+body.dark-mode .step-card,
+body.dark-mode .info-card,
+body.dark-mode .hotel-card,
+body.dark-mode .card {
+  background: #020617;
+  border: 1px solid #1f2937;
+  color: #e5e7eb;
+}
+
+/* Card yang di dalamnya sudah ada gradient biru (bagian atas) 
+   => cukup gelapkan bagian putih di bawahnya */
+body.dark-mode .hotel-card-content,
+body.dark-mode .hotel-card-body {
+  background: #020617;
+}
+
+/* FOOTER */
+body.dark-mode footer {
+  background: #020617;
+  color: #9ca3af;
+  border-top: 1px solid #111827;
+}
+
+/* LINK di dark mode */
+body.dark-mode a {
+  color: #60a5fa;
+}
+
+body.dark-mode a:hover {
+  color: #93c5fd;
+}
+
+/* INPUT & SELECT 
+   supaya tidak jadi kotak hitam pekat yang aneh */
+body.dark-mode input,
+body.dark-mode select {
+  background: #020617;       /* sedikit lebih terang dari hitam */
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+body.dark-mode input::placeholder {
+  color: #6b7280;
+}
+
+/* Badge user di navbar tetap jelas */
+body.dark-mode .user-badge {
+  background: #020617;
+  color: #f9fafb;
+}
+
+/* Tombol utama (Cari Hotel, dll) tetap mencolok */
+body.dark-mode .btn-primary {
+  color: #f9fafb;
+}
+
+/* Tombol Masuk / Logout (kapsul putih) tetap putih */
+body.dark-mode .btn-auth-login,
+body.dark-mode .btn-auth-signup {
+  background: #f9fafb;
+  color: #0f172a;
+}
+
+/* === Dark mode tweak: tab Hotel / Rent Car === */
+body.dark-mode .search-tabs {
+  background: #020617;              /* pill belakang ikut gelap */
+}
+
+body.dark-mode .search-tab {
+  background: transparent;
+  color: #cbd5f5;                    /* teks abu muda */
+}
+
+body.dark-mode .search-tab span.dot {
+  background: #64748b;               /* titik indikator non-aktif */
+}
+
+body.dark-mode .search-tab.active {
+  background: #f9fafb;               /* tab aktif tetap terang biar kontras */
+  color: #0f172a;                    /* teks gelap */
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.5);
+}
+
+body.dark-mode .search-tab.active span.dot {
+  background: #2563eb;               /* titik biru di tab aktif */
+}
+
+/* === Dark mode tweak: card hotel / destinasi === */
+body.dark-mode .destination-card {
+  background: #020617;
+  border-color: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark-mode .destination-body {
+  background: #020617;               /* bagian bawah card yang tadinya putih */
+}
+
+body.dark-mode .destination-meta {
+  color: #9ca3af;                    /* teks kecil: rating, review, dll */
+}
+
+body.dark-mode .price {
+  color: #60a5fa;                    /* harga biru lembut supaya tetap menonjol */
+}
+
+/* ==== DARK MODE FIX: field form pencarian ==== */
+body.dark-mode .field-label {
+  color: #9ca3af; /* label jadi abu muda */
+}
+
+body.dark-mode .field-input {
+  background: #020617;      /* kotak input jadi gelap lembut */
+  border-color: #334155;
+  color: #e5e7eb;
+}
+
+body.dark-mode .field-input input,
+body.dark-mode .field-input select {
+  color: #e5e7eb;
+}
+
+body.dark-mode .field-input input::placeholder {
+  color: #6b7280;
+}
+
+/* ==== DARK MODE FIX: tab HOTEL / RENT CAR (driver-tabs) ==== */
+body.dark-mode .driver-tabs {
+  background: #020617;      /* background pill tab ikut gelap */
+}
+
+body.dark-mode .driver-tab {
+  background: transparent;
+  color: #cbd5f5;           /* teks tab non-aktif */
+}
+
+body.dark-mode .driver-tab.active {
+  background: #f9fafb;      /* tab aktif tetap putih biar kontras */
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.45);
+}
+
+/* ==== DARK MODE: header halaman detail ==== */
+body.dark-mode .detail-header,
+body.dark-mode .detail-topbar,
+body.dark-mode .detail-navbar {
+  background: #020617;
+  color: #f9fafb;
+  border-bottom: 1px solid #111827;
+}
+
+body.dark-mode .detail-header a,
+body.dark-mode .detail-topbar a,
+body.dark-mode .detail-navbar a {
+  color: #93c5fd;
+}
+
+body.dark-mode .detail-header a:hover,
+body.dark-mode .detail-topbar a:hover,
+body.dark-mode .detail-navbar a:hover {
+  color: #bfdbfe;
+}
+
+/* ==== DARK MODE: kartu review tamu ==== */
+body.dark-mode .review-card,
+body.dark-mode .review-item,
+body.dark-mode .guest-review {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: #1f2937;
+}
+
+/* ==== DARK MODE: chip / pill fasilitas populer ==== */
+body.dark-mode .facility-item,
+body.dark-mode .facility-item,
+body.dark-mode .facility-item {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: #1f2937;
+}
+
+/* ===== Header detail (mode terang) ===== */
+.detail-navbar {
+  padding: 16px 40px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.detail-back-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.detail-back-link:hover {
+  color: #111827;
+}
+
+/* ===== Header detail di DARK MODE ===== */
+body.dark-mode .detail-navbar {
+  background: #020617;
+  border-bottom: 1px solid #111827;
+}
+
+body.dark-mode .detail-header .brand {
+  color: #f9fafb;
+}
+
+body.dark-mode .detail-header .brand span {
+  color: #60a5fa;    /* biru muda, biar sama dengan tema */
+}
+
+body.dark-mode .detail-back-link {
+  color: #93c5fd;
+}
+
+body.dark-mode .detail-back-link:hover {
+  color: #bfdbfe;
+}
+
