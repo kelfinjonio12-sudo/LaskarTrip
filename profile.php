@@ -17,49 +17,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     $nama_lengkap = trim($_POST['nama_lengkap'] ?? '');
     $email        = trim($_POST['email'] ?? '');
 
-    if ($nama_lengkap !== '' && $email !== '') {
-        $stmt = mysqli_prepare($conn,
-            "UPDATE users SET nama_lengkap = ?, email = ? WHERE username = ?"
-        );
-        mysqli_stmt_bind_param($stmt, "sss", $nama_lengkap, $email, $username);
+    if ($nama_lengkap && $email) {
+        $stmt = mysqli_prepare($conn, "UPDATE users SET nama_lengkap = ?, email = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, "ssi", $nama_lengkap, $email, $user_id);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        // Hindari resubmit form
         header('Location: profile.php?updated=1');
         exit;
     }
 }
 
 // Ambil data user
-$stmt = mysqli_prepare(
-    $conn,
-    "SELECT id, nama_lengkap, username, email, created_at 
-     FROM users 
-     WHERE username = ? LIMIT 1"
-);
-mysqli_stmt_bind_param($stmt, "s", $username);
+$stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $user   = mysqli_fetch_assoc($result);
 mysqli_stmt_close($stmt);
 
 if (!$user) {
-    $user = [
-        'id'           => 0,
-        'nama_lengkap' => $username,
-        'username'     => $username,
-        'email'        => '-',
-        'created_at'   => date('Y-m-d H:i:s'),
-    ];
+    echo "User tidak ditemukan.";
+    exit;
 }
 
-$user_id   = (int)$user['id'];
-$join_date = date('d M Y', strtotime($user['created_at']));
+$join_date = date('d M Y', strtotime($user['created_at'] ?? date('Y-m-d')));
 $initial   = strtoupper(substr($user['nama_lengkap'] ?: $user['username'], 0, 1));
 $updated   = isset($_GET['updated']);
 
-// AMBIL DATA BOOKING (JIKA TABEL ADA)
+
+// AMBIL DATA BOOKING HOTEL (JIKA TABEL ADA)
 $bookings      = [];
 $booking_error = null;
 
@@ -84,6 +71,31 @@ if ($stmtB = @mysqli_prepare($conn, $bookingSql)) {
     $booking_error = 'Data booking belum tersedia atau tabel bookings belum dibuat.';
 }
 
+// AMBIL DATA BOOKING SEWA MOBIL (JIKA TABEL ADA)
+$rent_bookings = [];
+$rent_error    = null;
+
+$rentSql = "
+    SELECT r.*, c.nama_mobil, c.brand, c.tipe
+    FROM rent_orders r
+    JOIN cars c ON r.car_id = c.car_id
+    WHERE r.user_id = ?
+    ORDER BY r.created_at DESC
+";
+
+if ($stmtR = @mysqli_prepare($conn, $rentSql)) {
+    mysqli_stmt_bind_param($stmtR, "i", $user_id);
+    mysqli_stmt_execute($stmtR);
+    $resR = mysqli_stmt_get_result($stmtR);
+    while ($row = mysqli_fetch_assoc($resR)) {
+        $rent_bookings[] = $row;
+    }
+    mysqli_stmt_close($stmtR);
+} else {
+    // Kalau belum ada tabel rent_orders / cars, jangan fatal error
+    $rent_error = 'Data sewa mobil belum tersedia atau tabel rent_orders / cars belum dibuat.';
+}
+
 // Helper rupiah
 function format_rupiah($angka) {
     return 'Rp ' . number_format($angka, 0, ',', '.');
@@ -94,77 +106,100 @@ function format_rupiah($angka) {
 <head>
     <meta charset="UTF-8">
     <title>Profil Saya - Laskar Trip</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-        margin: 0;
-        background: #f3f4f6;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-
-        /* HEADER / NAVBAR KECIL */
-        .detail-navbar {
-            padding: 16px 40px;
-            border-bottom: 1px solid #e5e7eb;
-            background: #ffffff;
-        }
-        .detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        .detail-back-link {
-            font-size: 13px;
-            font-weight: 500;
-            color: #6b7280;
-            text-decoration: none;
-        }
-        .detail-back-link:hover {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f3f4f6;
             color: #111827;
         }
 
-        /* WRAPPER DASHBOARD PROFIL – FULLSCREEN */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* HEADER KECIL (NAVBAR) */
+        .detail-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-header {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand {
+            font-weight: 700;
+            font-size: 18px;
+            color: #111827;
+        }
+        .brand span {
+            color: #2563eb;
+        }
+        .detail-back-link {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
         .profile-shell {
             width: 100%;
-            min-height: calc(100vh - 64px); /* kira-kira tinggi header */
+            min-height: calc(100vh - 64px);
             margin: 0;
-            padding: 24px 40px 40px;        /* ruang kiri-kanan seperti index */
+            padding: 24px 40px 40px;
             box-sizing: border-box;
             background: #f9fafb;
             border-radius: 0;
             box-shadow: none;
-            border-top: 1px solid #e5e7eb;  /* biar nyatu sama header */
+            border-top: 1px solid #e5e7eb;
+            max-width: 1120px;
+            margin-inline: auto;
         }
         .profile-title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .profile-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #6b7280;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        /* TABS */
+        .alert-success {
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: #ecfdf5;
+            border: 1px solid #bbf7d0;
+            font-size: 13px;
+            color: #166534;
+        }
+
+        /* TAB NAV ATAS */
         .profile-tabs {
             display: inline-flex;
-            padding: 4px;
+            background: #e5e7eb;
             border-radius: 999px;
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 18px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #d1d5db;
         }
         .tab-link {
             border: none;
             background: transparent;
-            padding: 7px 16px;
+            padding: 6px 16px;
             border-radius: 999px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #6b7280;
+            font-size: 14px;
             cursor: pointer;
+            color: #4b5563;
         }
         .tab-link.active {
             background: #ffffff;
@@ -180,154 +215,142 @@ function format_rupiah($angka) {
 
         .profile-grid {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
             gap: 20px;
         }
-
-        /* KARTU KIRI: INFO USER */
         .profile-card {
-            background: #f9fafb;
-            border-radius: 18px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 16px 18px;
             border: 1px solid #e5e7eb;
-            padding: 18px 18px 20px;
         }
         .profile-header {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             margin-bottom: 12px;
         }
         .profile-avatar {
-            width: 56px;
-            height: 56px;
+            width: 44px;
+            height: 44px;
             border-radius: 999px;
-            background: linear-gradient(135deg, #2563eb, #22c55e);
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
             color: #ffffff;
+            font-weight: 700;
+            font-size: 20px;
         }
         .profile-name {
-            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 2px;
+            font-size: 16px;
         }
         .profile-username {
-            font-size: 13px;
+            font-size: 12px;
             color: #6b7280;
         }
-        .profile-info-list {
-            margin-top: 12px;
+        .profile-info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
             font-size: 13px;
-            color: #4b5563;
-        }
-        .profile-info-list div {
-            margin-bottom: 6px;
         }
         .profile-info-label {
-            color: #9ca3af;
-            font-size: 12px;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
         }
 
         .profile-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 999px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-radius: 12px;
             background: #eff6ff;
-            font-size: 12px;
-            color: #1d4ed8;
-            margin-top: 8px;
+            border: 1px dashed #bfdbfe;
+            font-size: 13px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .profile-actions {
-            margin-top: 14px;
             display: flex;
             gap: 8px;
+            margin-top: 8px;
         }
         .btn-pill {
             border-radius: 999px;
-            border: none;
-            padding: 8px 14px;
+            border: 1px solid transparent;
+            padding: 6px 14px;
             font-size: 13px;
-            font-weight: 500;
             cursor: pointer;
         }
         .btn-primary {
-            background: #2563eb;
-            color: #fff;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: #ffffff;
+            border-color: transparent;
         }
         .btn-outline {
-            background: transparent;
-            border: 1px solid #d1d5db;
-            color: #111827;
+            background: #ffffff;
+            border-color: #d1d5db;
+            color: #374151;
         }
 
         .profile-edit-form {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px dashed #e5e7eb;
-            display: none; /* di-toggle dengan JS */
+            margin-top: 12px;
+            display: none;
         }
-        .profile-edit-form .form-row {
+        .form-row {
             margin-bottom: 10px;
         }
-        .profile-edit-form label {
+        .form-row label {
             display: block;
             font-size: 12px;
-            font-weight: 500;
+            color: #6b7280;
             margin-bottom: 4px;
-            color: #4b5563;
         }
-        .profile-edit-form input {
+        .form-row input {
             width: 100%;
             padding: 7px 10px;
             border-radius: 10px;
             border: 1px solid #d1d5db;
             font-size: 13px;
+            box-sizing: border-box;
         }
         .profile-edit-actions {
             display: flex;
             justify-content: flex-end;
             gap: 8px;
-            margin-top: 8px;
         }
 
-        .alert-success {
-            background: #ecfdf3;
-            border: 1px solid #bbf7d0;
-            color: #166534;
-            padding: 8px 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        /* KARTU KANAN: RINGKASAN & PREFERENSI */
         .profile-section {
-            background: #f9fafb;
-            border-radius: 18px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px 16px 18px;
             border: 1px solid #e5e7eb;
-            padding: 18px 18px 10px;
             margin-bottom: 14px;
         }
         .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
         }
         .section-title {
-            font-size: 15px;
             font-weight: 600;
+            font-size: 14px;
         }
         .section-subtext {
             font-size: 12px;
-            color: #9ca3af;
+            color: #6b7280;
         }
+
         .trip-list {
             list-style: none;
             padding: 0;
@@ -348,38 +371,40 @@ function format_rupiah($angka) {
         }
         .trip-meta {
             font-size: 12px;
-            color: #9ca3af;
+            color: #6b7280;
         }
 
         .pref-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            font-size: 12px;
+            gap: 6px;
+            font-size: 11px;
+            margin-top: 10px;
         }
         .pref-tag {
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 999px;
-            background: #e5e7eb;
-            color: #374151;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
         }
 
         .security-list {
             font-size: 13px;
-            color: #4b5563;
+            padding-left: 16px;
+            margin: 6px 0 0;
         }
         .security-list li {
             margin-bottom: 4px;
         }
 
         .profile-footer {
-            margin-top: 16px;
+            margin-top: 8px;
             font-size: 12px;
             color: #9ca3af;
             text-align: right;
         }
 
-        /* BOOKING LIST */
+        /* BOOKING LIST (dipakai hotel & sewa mobil) */
         .booking-list {
             margin-top: 8px;
             font-size: 13px;
@@ -426,6 +451,21 @@ function format_rupiah($angka) {
             font-size: 11px;
             margin-top: 4px;
         }
+        
+        .booking-actions {
+            margin-top: 8px;
+        }
+        .badge-paid-small {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #22c55e;
+        }
+
         .status-pending {
             background: #fef3c7;
             color: #92400e;
@@ -445,6 +485,37 @@ function format_rupiah($angka) {
             border: 1px dashed #d1d5db;
             font-size: 13px;
             color: #6b7280;
+        }
+
+        /* Sub-tab di dalam "Booking Saya" */
+        .booking-subtabs {
+            display: inline-flex;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 999px;
+            margin: 16px 0 12px;
+            gap: 4px;
+        }
+        .booking-tab {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .booking-tab.active {
+            background: #ffffff;
+            color: #111827;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.12);
+        }
+        .booking-pane {
+            display: none;
+        }
+        .booking-pane.active {
+            display: block;
         }
 
         @media (max-width: 900px) {
@@ -470,48 +541,36 @@ function format_rupiah($angka) {
         }
         body.dark-mode .detail-navbar {
             background: #020617;
-            border-bottom: 1px solid #111827;
+            border-color: #111827;
         }
-        body.dark-mode .detail-header .brand {
-            color: #f9fafb;
-        }
-        body.dark-mode .detail-header .brand span {
-            color: #60a5fa;
-        }
-        body.dark-mode .detail-back-link {
-            color: #93c5fd;
-        }
-        body.dark-mode .detail-back-link:hover {
-            color: #bfdbfe;
-        }
-
         body.dark-mode .profile-shell {
             background: #020617;
-            box-shadow: none;
-            border: none;
-            border-top: 1px solid #111827;
+            border-color: #111827;
         }
-
         body.dark-mode .profile-card,
         body.dark-mode .profile-section {
             background: #020617;
             border-color: #1f2937;
         }
-        body.dark-mode .profile-subtitle,
-        body.dark-mode .profile-username,
-        body.dark-mode .profile-info-label,
+        body.dark-mode .brand {
+            color: #f9fafb;
+        }
+        body.dark-mode .detail-back-link {
+            color: #9ca3af;
+        }
         body.dark-mode .section-subtext,
-        body.dark-mode .trip-meta {
+        body.dark-mode .trip-meta,
+        body.dark-mode .profile-subtitle,
+        body.dark-mode .profile-info-label {
             color: #9ca3af;
         }
         body.dark-mode .pref-tag {
-            background: #1f2937;
+            background: #020617;
+            border-color: #1f2937;
             color: #e5e7eb;
         }
-        body.dark-mode .btn-outline {
-            background: transparent;
-            border-color: #374151;
-            color: #e5e7eb;
+        body.dark-mode .booking-status {
+            border: 1px solid rgba(148,163,184,0.5);
         }
         body.dark-mode .profile-tabs {
             background: #020617;
@@ -521,6 +580,19 @@ function format_rupiah($angka) {
             color: #9ca3af;
         }
         body.dark-mode .tab-link.active {
+            background: #020617;
+            color: #f9fafb;
+            box-shadow: 0 6px 18px rgba(15,23,42,0.6);
+        }
+
+        body.dark-mode .booking-subtabs {
+            background: #020617;
+            border-color: #1f2937;
+        }
+        body.dark-mode .booking-tab {
+            color: #9ca3af;
+        }
+        body.dark-mode .booking-tab.active {
             background: #020617;
             color: #f9fafb;
             box-shadow: 0 6px 18px rgba(15,23,42,0.6);
@@ -573,7 +645,7 @@ function format_rupiah($angka) {
     <!-- PANEL 1: PROFIL -->
     <section id="tab-profile" class="tab-panel active">
         <div class="profile-grid">
-            <!-- Kolom kiri: info user + form edit -->
+            <!-- Kolom kiri -->
             <aside class="profile-card">
                 <div class="profile-header">
                     <div class="profile-avatar"><?= htmlspecialchars($initial); ?></div>
@@ -583,7 +655,7 @@ function format_rupiah($angka) {
                     </div>
                 </div>
 
-                <div class="profile-info-list">
+                <div class="profile-info-row">
                     <div>
                         <div class="profile-info-label">Email</div>
                         <div><?= htmlspecialchars($user['email']); ?></div>
@@ -624,7 +696,7 @@ function format_rupiah($angka) {
                 </form>
             </aside>
 
-            <!-- Kolom kanan: ringkasan & preferensi & keamanan -->
+            <!-- Kolom kanan -->
             <section>
                 <div class="profile-section">
                     <div class="section-header">
@@ -663,7 +735,7 @@ function format_rupiah($angka) {
                     <div class="section-header">
                         <div>
                             <div class="section-title">Preferensi Perjalanan</div>
-                            <div class="section-subtext">Kami gunakan untuk memberi rekomendasi hotel yang lebih relevan.</div>
+                            <div class="section-subtext">Kami gunakan ini untuk rekomendasi yang lebih tepat.</div>
                         </div>
                     </div>
                     <div class="pref-tags">
@@ -702,77 +774,180 @@ function format_rupiah($angka) {
             <div class="section-header">
                 <div>
                     <div class="section-title">Booking Saya</div>
-                    <div class="section-subtext">Riwayat pemesanan hotel yang terhubung dengan akunmu.</div>
+                    <div class="section-subtext">Riwayat pemesanan hotel dan sewa mobil yang terhubung dengan akunmu.</div>
                 </div>
             </div>
 
-            <?php if ($booking_error): ?>
-                <div class="booking-empty">
-                    <?= htmlspecialchars($booking_error); ?>
-                </div>
+            <!-- Sub-tab Booking: Hotel / Sewa Mobil -->
+            <div class="booking-subtabs">
+                <button type="button" class="booking-tab active" data-target="#booking-hotel">Booking Hotel</button>
+                <button type="button" class="booking-tab" data-target="#booking-car">Sewa Mobil</button>
+            </div>
 
-            <?php elseif (empty($bookings)): ?>
-                <div class="booking-empty">
-                    Kamu belum memiliki booking. Mulai cari hotel favoritmu di halaman utama dan lakukan pemesanan.
-                </div>
+            <!-- PANE: BOOKING HOTEL -->
+            <div id="booking-hotel" class="booking-pane active">
+                <?php if ($booking_error): ?>
+                    <div class="booking-empty">
+                        <?= htmlspecialchars($booking_error); ?>
+                    </div>
 
-            <?php else: ?>
-                <div class="booking-list">
-                    <?php foreach ($bookings as $b): ?>
-                        <?php
-                        // Format tanggal dari kolom bookings: check_in, check_out, created_at
-                        $check_in  = isset($b['check_in'])  && $b['check_in']
-                            ? date('d M Y', strtotime($b['check_in']))
-                            : '-';
-                        $check_out = isset($b['check_out']) && $b['check_out']
-                            ? date('d M Y', strtotime($b['check_out']))
-                            : '-';
-                        $created   = isset($b['created_at']) && $b['created_at']
-                            ? date('d M Y H:i', strtotime($b['created_at']))
-                            : '-';
+                <?php elseif (empty($bookings)): ?>
+                    <div class="booking-empty">
+                        Kamu belum memiliki booking hotel. Mulai cari hotel favoritmu di halaman utama dan lakukan pemesanan.
+                    </div>
 
-                        // Mapping status ke badge CSS
-                        $status_raw   = strtolower($b['status'] ?? 'pending');
-                        $status_label = strtoupper($status_raw);
-                        $status_class = 'status-pending';
+                <?php else: ?>
+                    <div class="booking-list">
+                        <?php foreach ($bookings as $b): ?>
+                            <?php
+                            $check_in  = isset($b['check_in'])  && $b['check_in']
+                                ? date('d M Y', strtotime($b['check_in']))
+                                : '-';
+                            $check_out = isset($b['check_out']) && $b['check_out']
+                                ? date('d M Y', strtotime($b['check_out']))
+                                : '-';
+                            $created   = isset($b['created_at']) && $b['created_at']
+                                ? date('d M Y H:i', strtotime($b['created_at']))
+                                : '-';
 
-                        if (in_array($status_raw, ['success', 'paid', 'completed'])) {
-                            $status_class = 'status-completed';
-                        } elseif (in_array($status_raw, ['cancelled', 'canceled', 'failed'])) {
-                            $status_class = 'status-cancelled';
-                        }
-                        ?>
-                        <article class="booking-card">
-                            <div class="booking-main">
-                                <div class="booking-hotel">
-                                    <?= htmlspecialchars($b['nama_hotel']); ?>
+                            $status_raw   = strtolower($b['status'] ?? 'pending');
+                            $status_label = strtoupper($status_raw);
+                            $status_class = 'status-pending';
+
+                            if (in_array($status_raw, ['success', 'paid', 'completed'])) {
+                                $status_class = 'status-completed';
+                            } elseif (in_array($status_raw, ['cancelled', 'batal'])) {
+                                $status_class = 'status-cancelled';
+                            }
+                            ?>
+                            <article class="booking-card">
+                                <div class="booking-main">
+                                    <div class="booking-hotel">
+                                        <?= htmlspecialchars($b['nama_hotel']); ?>
+                                    </div>
+                                    <div class="booking-location">
+                                        <?= htmlspecialchars($b['lokasi']); ?>
+                                    </div>
+                                    <div class="booking-dates">
+                                        Check-in: <?= $check_in; ?> &nbsp; • &nbsp;
+                                        Check-out: <?= $check_out; ?><br>
+                                        Dibuat: <?= $created; ?>
+                                    </div>
                                 </div>
-                                <div class="booking-location">
-                                    <?= htmlspecialchars($b['lokasi']); ?>
+                                <div class="booking-side">
+                                    <div class="booking-price">
+                                        <?= format_rupiah($b['total_price']); ?>
+                                    </div>
+                                    <div class="booking-status <?= $status_class; ?>">
+                                        <?= htmlspecialchars($status_label); ?>
+                                    </div>
                                 </div>
-                                <div class="booking-dates">
-                                    Check-in: <?= $check_in; ?> &nbsp; • &nbsp;
-                                    Check-out: <?= $check_out; ?><br>
-                                    Dibuat: <?= $created; ?>
-                                </div>
-                            </div>
-                            <div class="booking-side">
-                                <div class="booking-price">
-                                    <?= format_rupiah($b['total_price']); ?>
-                                </div>
-                                <div class="booking-status <?= $status_class; ?>">
-                                    <?= htmlspecialchars($status_label); ?>
-                                </div>
-                            </div>
-                        </article>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- PANE: BOOKING SEWA MOBIL -->
+<div id="booking-car" class="booking-pane">
+    <?php if ($rent_error): ?>
+        <div class="booking-empty">
+            <?= htmlspecialchars($rent_error); ?>
         </div>
-</section>
+
+    <?php elseif (empty($rent_bookings)): ?>
+        <div class="booking-empty">
+            Kamu belum memiliki booking sewa mobil. Mulai cari mobil di menu sewa mobil dan lakukan pemesanan.
+        </div>
+
+    <?php else: ?>
+        <div class="booking-list">
+            <?php foreach ($rent_bookings as $r): ?>
+                <?php
+                $start   = isset($r['start_datetime']) && $r['start_datetime']
+                    ? date('d M Y H:i', strtotime($r['start_datetime']))
+                    : '-';
+                $end     = isset($r['end_datetime']) && $r['end_datetime']
+                    ? date('d M Y H:i', strtotime($r['end_datetime']))
+                    : '-';
+                $created = isset($r['created_at']) && $r['created_at']
+                    ? date('d M Y H:i', strtotime($r['created_at']))
+                    : '-';
+
+                $rent_status_raw   = strtolower($r['rent_status'] ?? 'pending');
+                $rent_status_label = strtoupper($rent_status_raw);
+                $rent_status_class = 'status-pending';
+                if (in_array($rent_status_raw, ['success', 'paid', 'completed', 'finished', 'confirmed'])) {
+                    $rent_status_class = 'status-completed';
+                } elseif (in_array($rent_status_raw, ['cancelled', 'batal'])) {
+                    $rent_status_class = 'status-cancelled';
+                }
+
+                $pay_raw   = strtolower($r['payment_status'] ?? 'unpaid');
+                $pay_label = strtoupper($pay_raw);
+                $pay_class = 'status-pending';
+                if (in_array($pay_raw, ['paid', 'success'])) {
+                    $pay_class = 'status-completed';
+                } elseif (in_array($pay_raw, ['cancelled', 'failed', 'batal'])) {
+                    $pay_class = 'status-cancelled';
+                }
+                ?>
+                <article class="booking-card">
+                    <div class="booking-main">
+                        <div class="booking-hotel">
+                            <?= htmlspecialchars($r['nama_mobil']); ?>
+                        </div>
+                        <div class="booking-location">
+                            <?= htmlspecialchars($r['brand']); ?> • <?= htmlspecialchars($r['tipe']); ?> •
+                            <?= $r['with_driver'] ? 'With Driver' : 'Without Driver'; ?>
+                        </div>
+                        <div class="booking-dates">
+                            Mulai: <?= $start; ?> &nbsp; • &nbsp;
+                            Selesai: <?= $end; ?><br>
+                            Dibuat: <?= $created; ?>
+                        </div>
+                    </div>
+                    <div class="booking-side">
+                        <div class="booking-price">
+                            <?= format_rupiah($r['total_harga']); ?>
+                        </div>
+                        <div class="booking-status <?= $rent_status_class; ?>">
+                            <?= htmlspecialchars($rent_status_label); ?>
+                        </div>
+                        <div class="booking-status <?= $pay_class; ?>" style="margin-top:4px;">
+                            <?= htmlspecialchars($pay_label); ?>
+                        </div>
+
+                        <?php
+                            $rent_id        = (int)($r['rent_id'] ?? 0);
+                            $rent_status    = strtolower($r['rent_status'] ?? 'pending');
+                            $payment_status = strtolower($r['payment_status'] ?? 'unpaid');
+                        ?>
+                        <div class="booking-actions">
+                            <?php if ($payment_status === 'unpaid' && !in_array($rent_status, ['cancelled','batal'], true)): ?>
+                                <form action="midtrans_rent.php" method="post" style="display:inline;">
+                                    <input type="hidden" name="rent_id" value="<?= (int)$rent_id; ?>">
+                                    <button type="submit" class="btn-pill btn-primary">
+                                        Bayar Sekarang
+                                    </button>
+                                </form>
+                            <?php elseif (in_array($payment_status, ['paid','success'], true)): ?>
+                                <span class="badge-paid-small">Sudah dibayar</span>
+                            <?php endif; ?>
+                            <a href="rent_tracking.php?rent_id=<?= $rent_id; ?>" class="btn-pill btn-outline">
+                            Lihat Lokasi Tujuan
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>
+    </section>
 </main>
 
-<!-- Aktifkan tema dark kalau sebelumnya user pilih dark + logika tab & edit form -->
+<!-- Aktifkan tema dark + logika tab & sub-tab booking + edit form -->
 <script>
 (function () {
     var savedTheme = localStorage.getItem('theme');
@@ -780,7 +955,7 @@ function format_rupiah($angka) {
         document.body.classList.add('dark-mode');
     }
 
-    // Tab logic
+    // Tab utama (Profil / Booking Saya)
     const tabLinks = document.querySelectorAll('.tab-link');
     const tabPanels = document.querySelectorAll('.tab-panel');
 
@@ -793,6 +968,25 @@ function format_rupiah($angka) {
 
             btn.classList.add('active');
             document.getElementById(target).classList.add('active');
+        });
+    });
+
+    // Sub-tab Booking: Hotel vs Sewa Mobil
+    const bookingTabs  = document.querySelectorAll('.booking-tab');
+    const bookingPanes = document.querySelectorAll('.booking-pane');
+
+    bookingTabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+
+            bookingTabs.forEach(b => b.classList.remove('active'));
+            bookingPanes.forEach(p => p.classList.remove('active'));
+
+            btn.classList.add('active');
+            const pane = document.querySelector(target);
+            if (pane) {
+                pane.classList.add('active');
+            }
         });
     });
 

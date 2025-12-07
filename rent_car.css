@@ -1,0 +1,960 @@
+/* =======================
+   Base & Theme
+   ======================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --lt-primary: #2563eb;
+    --lt-primary-dark: #1d4ed8;
+    --lt-bg-top: #020617;
+    --lt-bg-main: #f3f4ff;
+    --lt-card-bg: #ffffff;
+    --lt-text: #0f172a;
+    --lt-muted: #6b7280;
+    --lt-border: #e5e7eb;
+    --lt-radius-lg: 22px;
+    --lt-shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.16);
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--lt-text);
+    background:
+        linear-gradient(to bottom, var(--lt-bg-top) 0%, var(--lt-bg-top) 80px, var(--lt-bg-main) 80px);
+}
+
+/* =======================
+   NAVBAR
+   ======================= */
+
+.lt-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(
+        to bottom,
+        rgba(15, 23, 42, 0.96),
+        rgba(15, 23, 42, 0.9)
+    );
+    border-bottom: 1px solid rgba(51, 65, 85, 0.7);
+}
+
+.lt-nav-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+/* Brand kiri */
+
+.lt-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.lt-logo-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #ffffff;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.7);
+}
+
+.lt-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.lt-brand-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+.lt-brand-sub {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* Menu tengah */
+
+.lt-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.86rem;
+}
+
+.lt-nav-links a {
+    text-decoration: none;
+    color: #9ca3af;
+    padding: 6px 10px;
+    border-radius: 999px;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+
+.lt-nav-links a:hover {
+    color: #e5e7eb;
+    background: rgba(148, 163, 184, 0.25);
+}
+
+.lt-nav-links a.active {
+    color: #e5e7eb;
+    background: rgba(37, 99, 235, 0.24);
+}
+
+/* Tombol kanan */
+
+.lt-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lt-btn-ghost,
+.lt-btn-nav-primary {
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lt-btn-ghost {
+    color: #e5e7eb;
+    border-color: rgba(148, 163, 184, 0.7);
+    background: transparent;
+}
+
+.lt-btn-ghost:hover {
+    background: rgba(148, 163, 184, 0.2);
+}
+
+.lt-btn-nav-primary {
+    color: #0b1120;
+    background: #f9fafb;
+    border-color: transparent;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.55);
+}
+
+.lt-btn-nav-primary:hover {
+    filter: brightness(0.96);
+}
+
+@media (max-width: 768px) {
+    .lt-nav-links {
+        display: none; /* simple: sembunyi menu tengah di mobile */
+    }
+}
+
+/* =======================
+   Layout Page
+   ======================= */
+
+.rent-page {
+    max-width: 1120px;
+    margin: 96px auto 48px; /* bikin turun di bawah navbar */
+    padding: 0 20px 32px;
+}
+
+/* =======================
+   Header Section (judul)
+   ======================= */
+
+.rent-header {
+    margin-bottom: 20px;
+}
+
+.rent-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #1d4ed8;
+    background: #e0edff;
+    border: 1px solid #bfdbfe;
+}
+
+.rent-header h1 {
+    margin: 10px 0 4px;
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+    color: var(--lt-text);       /* <-- TEKS GELAP, BUKAN PUTIH LAGI */
+}
+
+.rent-header p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--lt-muted);      /* <-- ABU-ABU LEMBUT */
+    max-width: 520px;
+}
+
+/* =======================
+   Car List & Card
+   ======================= */
+
+.car-list {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.car-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.1fr);
+    gap: 18px;
+    padding: 18px 22px;
+    border-radius: var(--lt-radius-lg);
+    background: var(--lt-card-bg);
+    border: 1px solid rgba(148, 163, 184, 0.26);
+    box-shadow: var(--lt-shadow-soft);
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .car-card {
+        grid-template-columns: 1fr;
+        padding: 16px 16px 18px;
+    }
+}
+
+/* Left */
+
+.car-main {
+    min-width: 0;
+}
+
+.car-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.car-name {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--lt-text);
+}
+
+.car-brand-badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.car-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.tag {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    background: #f1f5f9;
+    color: var(--lt-muted);
+    border: 1px dashed #cbd5f5;
+}
+
+.car-note {
+    margin: 4px 0 0;
+    font-size: 0.88rem;
+    color: var(--lt-muted);
+}
+
+/* Right */
+
+.car-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .car-side {
+        align-items: flex-start;
+    }
+}
+
+.price-block {
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: linear-gradient(120deg, #eef2ff, #e0f2fe);
+    border: 1px solid rgba(129, 140, 248, 0.45);
+    min-width: 230px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.price-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #4b5563;
+}
+
+.price-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+
+.price-detail {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.8rem;
+    color: #4b5563;
+}
+
+/* Button */
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #ffffff;
+    background: radial-gradient(circle at 0% 0%, #38bdf8 0%, #2563eb 40%, #1d4ed8 100%);
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.5);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 48px rgba(37, 99, 235, 0.6);
+    filter: brightness(1.04);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 26px rgba(37, 99, 235, 0.45);
+}
+
+/* Empty state */
+
+.empty-state {
+    margin-top: 32px;
+    padding: 18px 16px;
+    border-radius: 18px;
+    background: #e5e7eb;
+    color: var(--lt-muted);
+    font-size: 0.95rem;
+}
+
+/* =======================
+   BOOKING PAGE
+   ======================= */
+
+.booking-page {
+    max-width: 1120px;
+    margin: 96px auto 48px;
+    padding: 0 20px 40px;
+}
+
+.booking-header h1 {
+    margin: 0 0 4px;
+    font-size: 1.7rem;
+    color: var(--lt-text);
+}
+
+.booking-header p {
+    margin: 0 0 18px;
+    font-size: 0.95rem;
+    color: var(--lt-muted);
+}
+
+.booking-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr);
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .booking-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.booking-summary {
+    border-radius: 20px;
+    padding: 18px 18px 20px;
+    background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+    border: 1px solid rgba(129, 140, 248, 0.6);
+    box-shadow: 0 18px 40px rgba(129, 140, 248, 0.35);
+}
+
+.booking-summary h2 {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+}
+
+.summary-brand {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.summary-meta {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.summary-price {
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    margin-bottom: 10px;
+}
+
+.summary-price .label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6b7280;
+}
+
+.summary-price .value {
+    display: block;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1d4ed8;
+}
+
+.summary-price .detail {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #4b5563;
+}
+
+.summary-note {
+    margin: 6px 0 0;
+    font-size: 0.84rem;
+    color: #4b5563;
+}
+
+/* Form card */
+
+.booking-form-card {
+    border-radius: 20px;
+    padding: 18px 18px 22px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: var(--lt-shadow-soft);
+}
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-label {
+    font-size: 0.86rem;
+    color: var(--lt-muted);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--lt-border);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    border-color: var(--lt-primary);
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+
+.form-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.form-radio-group input {
+    margin-right: 4px;
+}
+
+/* Alerts */
+
+.alert {
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #ecfdf3;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+/* Actions */
+
+.form-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-secondary {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--lt-border);
+    background: #f9fafb;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: var(--lt-text);
+}
+
+/* =======================
+   FOOTER LASKAR TRIP
+   ======================= */
+
+.lt-footer {
+    margin-top: 24px;
+    padding: 14px 20px 20px;
+    background: #020617; /* sama seperti navbar */
+    border-top: 1px solid rgba(30, 64, 175, 0.6);
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+.lt-footer-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lt-footer-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.lt-footer-brand {
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
+.lt-footer-text {
+    color: #9ca3af;
+}
+
+.lt-footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: #6b7280;
+}
+
+@media (min-width: 640px) {
+    .lt-footer-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* =======================
+   LIST "BOOKING SAYA"
+   ======================= */
+
+.alert-empty {
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    font-size: 0.9rem;
+    color: #1d4ed8;
+}
+
+.alert-empty a {
+    color: #1d4ed8;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.my-bookings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.my-booking-card {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 0.9fr);
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .my-booking-card {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mb-main {
+    font-size: 0.9rem;
+}
+
+.mb-title {
+    margin: 0 0 2px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.mb-brand {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.mb-sub {
+    margin: 0 0 6px;
+    color: #6b7280;
+    font-size: 0.86rem;
+}
+
+.mb-location,
+.mb-time {
+    margin: 0 0 4px;
+    color: #4b5563;
+    font-size: 0.86rem;
+}
+
+.mb-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .mb-side {
+        align-items: flex-start;
+    }
+}
+
+.mb-price {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1d4ed8;
+}
+
+.mb-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.badge {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    border: 1px solid transparent;
+}
+
+/* Status booking */
+.badge-status-pending {
+    background: #fef3c7;
+    border-color: #facc15;
+    color: #92400e;
+}
+
+.badge-status-menunggu_driver {
+    background: #e0f2fe;
+    border-color: #38bdf8;
+    color: #075985;
+}
+
+.badge-status-dikonfirmasi {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.badge-status-on_trip {
+    background: #e0f2fe;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+.badge-status-completed {
+    background: #ecfdf3;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.badge-status-cancelled {
+    background: #fee2e2;
+    border-color: #f97373;
+    color: #991b1b;
+}
+
+/* Payment */
+.badge-payment-unpaid {
+    background: #fee2e2;
+    border-color: #f97373;
+    color: #991b1b;
+}
+
+.badge-payment-paid {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.badge-payment-cancelled,
+.badge-payment-refunded {
+    background: #fef3c7;
+    border-color: #facc15;
+    color: #92400e;
+}
+
+/* Ringkasan pencarian di halaman daftar mobil */
+.rent-summary-box {
+    max-width: 720px;
+    margin: 0 auto 18px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px 16px;
+    font-size: 13px;
+}
+
+.rent-summary-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.rent-summary-row .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+}
+
+.rent-summary-row .value {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.rent-summary-actions {
+    max-width: 720px;
+    margin: 8px auto 20px;
+    text-align: right;
+}
+
+.btn-kecil {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    font-size: 13px;
+    color: #374151;
+    background: #ffffff;
+    text-decoration: none;
+}
+.btn-kecil:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+}
+
+.car-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.availability-chip {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    border: 1px solid transparent;
+}
+.availability-chip.available {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+.availability-chip.not-available {
+    background: #fee2e2;
+    border-color: #f97373;
+    color: #991b1b;
+}
+
+.rent-btn-disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none; /* supaya tidak bisa diklik */
+}
+
+/* =======================
+   DARK MODE (ikut beranda)
+   ======================= */
+
+body.dark-mode {
+    /* ubah nilai variable utama */
+    --lt-bg-main: #020617;
+    --lt-card-bg: #020617;
+    --lt-text: #e5e7eb;
+    --lt-muted: #9ca3af;
+    --lt-border: #1f2937;
+
+    background:
+        linear-gradient(
+            to bottom,
+            var(--lt-bg-top) 0%,
+            var(--lt-bg-top) 80px,
+            var(--lt-bg-main) 80px
+        );
+}
+
+/* header judul */
+body.dark-mode .rent-header h1 {
+    color: var(--lt-text);
+}
+body.dark-mode .rent-header p {
+    color: var(--lt-muted);
+}
+
+/* kartu & box utama */
+body.dark-mode .rent-summary-box,
+body.dark-mode .booking-summary,
+body.dark-mode .booking-form-card,
+body.dark-mode .car-card,
+body.dark-mode .my-booking-card {
+    background: #020617;
+    border-color: #1f2937;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.85);
+}
+
+/* teks kecil dalam summary */
+body.dark-mode .rent-summary-row .label {
+    color: var(--lt-muted);
+}
+body.dark-mode .rent-summary-row .value {
+    color: var(--lt-text);
+}
+
+/* tag / badge kecil */
+body.dark-mode .tag {
+    background: #020617;
+    border-color: #1f2937;
+    color: var(--lt-muted);
+}
+
+/* empty state */
+body.dark-mode .empty-state,
+body.dark-mode .alert-empty {
+    background: #020617;
+    border-color: #1f2937;
+    color: var(--lt-muted);
+}
+

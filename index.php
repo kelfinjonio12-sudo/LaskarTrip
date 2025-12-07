@@ -158,104 +158,127 @@ if (!$result) {
           </div>
 
           <!-- TAB CAR CONTENT -->
-          <div id="tab-car" class="tab-pane">
-            
-            <!-- SUB TAB: WITH / WITHOUT DRIVER -->
-            <div class="driver-tabs">
-                <button class="driver-tab active" data-target="#with-driver">With Driver</button>
-                <button class="driver-tab" data-target="#without-driver">Without Driver</button>
-            </div>
+<div id="tab-car" class="tab-pane">
 
-            <!-- ================= WITH DRIVER ================= -->
-            <div id="with-driver" class="driver-pane active">
-                <div class="search-grid">
-                <div class="field">
-                    <span class="field-label">Lokasi penjemputan</span>
-                    <div class="field-input">
-                    <span class="field-icon">📍</span>
-                    <input type="text" placeholder="Bandara / Stasiun / Lokasi kamu" />
-                    </div>
-                </div>
+  <!-- SUB TAB: WITH / WITHOUT DRIVER -->
+  <div class="driver-tabs">
+      <button class="driver-tab active" data-target="#with-driver">With Driver</button>
+      <button class="driver-tab" data-target="#without-driver">Without Driver</button>
+  </div>
 
-                <div class="field">
-                    <span class="field-label">Tanggal &amp; jam mulai</span>
-                    <div class="field-input">
-                    <span class="field-icon">⏱</span>
-                    <input type="text" placeholder="dd / mm / yyyy   -- : --" />
-                    </div>
-                </div>
+  <!-- ================= WITH DRIVER ================= -->
+  <div id="with-driver" class="driver-pane active">
+    <form class="search-grid" method="GET" action="rent_car_list.php">
+      <input type="hidden" name="driver" value="1">
 
-                <div class="field">
-                    <span class="field-label">Durasi sewa</span>
-                    <div class="field-input">
-                    <span class="field-icon">📆</span>
-                    <select>
-                        <option>12 Jam</option>
-                        <option>24 Jam</option>
-                        <option>2 Hari</option>
-                        <option>3 Hari</option>
-                        <option>1 Minggu</option>
-                    </select>
-                    </div>
-                </div>
-
-                <div class="field search-button-wrapper">
-                    <button class="btn-search">
-                    <span class="icon">🚗</span>
-                    Cari Mobil
-                    </button>
-                </div>
-                </div>
-
-                <div class="search-hint">
-                <span>Sopir profesional Laskar Trip sudah termasuk.</span>
-                <span>BBM &amp; tol bisa pilih saat checkout.</span>
-                </div>
-            </div>
-
-            <!-- ================= WITHOUT DRIVER ================= -->
-            <div id="without-driver" class="driver-pane">
-                <div class="search-grid">
-                <div class="field">
-                    <span class="field-label">Lokasi pengambilan</span>
-                    <div class="field-input">
-                    <span class="field-icon">📍</span>
-                    <input type="text" placeholder="Kota / Lokasi rental" />
-                    </div>
-                </div>
-
-                <div class="field">
-                    <span class="field-label">Tanggal &amp; jam mulai</span>
-                    <div class="field-input">
-                    <span class="field-icon">⏱</span>
-                    <input type="text" placeholder="dd / mm / yyyy   -- : --" />
-                    </div>
-                </div>
-
-                <div class="field">
-                    <span class="field-label">Tanggal &amp; jam selesai</span>
-                    <div class="field-input">
-                    <span class="field-icon">⏱</span>
-                    <input type="text" placeholder="dd / mm / yyyy   -- : --" />
-                    </div>
-                </div>
-
-                <div class="field search-button-wrapper">
-                    <button class="btn-search">
-                    <span class="icon">🚗</span>
-                    Cari Mobil
-                    </button>
-                </div>
-                </div>
-
-                <div class="search-hint">
-                <span>Tanpa sopir (lepas kunci), wajib punya SIM &amp; KTP aktif.</span>
-                <span>Deposit &amp; aturan lainnya akan dijelaskan saat checkout.</span>
-                </div>
-            </div>
-          </div> 
+      <div class="field">
+        <span class="field-label">Lokasi penjemputan</span>
+        <div class="field-input">
+          <span class="field-icon">📍</span>
+          <input 
+            type="text" 
+            name="pickup_location"
+            placeholder="Bandara / Stasiun / Lokasi kamu" 
+          />
         </div>
-      </div>   
+      </div>
+
+      <div class="field">
+        <span class="field-label">Tanggal &amp; jam mulai</span>
+        <div class="field-input">
+          <span class="field-icon">⏱</span>
+          <!-- kamu bisa tetap styling seperti sekarang -->
+          <input 
+            type="datetime-local" 
+            name="start_datetime"
+            placeholder="dd / mm / yyyy   -- : --" 
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Durasi sewa</span>
+        <div class="field-input">
+          <span class="field-icon">📆</span>
+          <select name="duration_hours">
+            <option value="12">12 Jam</option>
+            <option value="24">24 Jam</option>
+            <option value="48">2 Hari</option>
+            <option value="72">3 Hari</option>
+            <option value="168">1 Minggu</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field search-button-wrapper">
+        <button class="btn-search" type="submit">
+          <span class="icon">🚗</span>
+          Cari Mobil
+        </button>
+      </div>
+    </form>
+
+    <div class="search-hint">
+      <span>Sopir profesional Laskar Trip sudah termasuk.</span>
+      <span>BBM &amp; tol bisa pilih saat checkout.</span>
+    </div>
+  </div>
+
+  <!-- ================= WITHOUT DRIVER ================= -->
+  <div id="without-driver" class="driver-pane">
+    <form class="search-grid" method="GET" action="rent_car_list.php">
+      <input type="hidden" name="driver" value="0">
+
+      <div class="field">
+        <span class="field-label">Lokasi pengambilan</span>
+        <div class="field-input">
+          <span class="field-icon">📍</span>
+          <input 
+            type="text" 
+            name="pickup_location"
+            placeholder="Kota / Lokasi rental" 
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Tanggal &amp; jam mulai</span>
+        <div class="field-input">
+          <span class="field-icon">⏱</span>
+          <input 
+            type="datetime-local" 
+            name="start_datetime"
+            placeholder="dd / mm / yyyy   -- : --" 
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Tanggal &amp; jam selesai</span>
+        <div class="field-input">
+          <span class="field-icon">⏱</span>
+          <input 
+            type="datetime-local" 
+            name="end_datetime"
+            placeholder="dd / mm / yyyy   -- : --" 
+          />
+        </div>
+      </div>
+
+      <div class="field search-button-wrapper">
+        <button class="btn-search" type="submit">
+          <span class="icon">🚗</span>
+          Cari Mobil
+        </button>
+      </div>
+    </form>
+
+    <div class="search-hint">
+      <span>Tanpa sopir (lepas kunci), wajib punya SIM &amp; KTP aktif.</span>
+      <span>Deposit &amp; aturan lainnya akan dijelaskan saat checkout.</span>
+    </div>
+  </div>
+</div>  
     </section>
 
     <!-- WHY LASKAR TRIP -->
@@ -448,43 +471,59 @@ if (!$result) {
     </div>
   </footer>
   <script>
-    // FUNGSI UNTUK TAB GENERIC (Bisa dipakai untuk Tab Utama & Driver Tab)
-    function setupTabs(tabSelector, paneSelector) {
-        const tabs = document.querySelectorAll(tabSelector);
-        
-        tabs.forEach((tab) => {
-            tab.addEventListener("click", () => {
-                const targetSelector = tab.getAttribute("data-target");
+document.addEventListener('DOMContentLoaded', function () {
+  /* ========== TAB UTAMA: HOTEL vs RENT CAR ========== */
+  const mainTabs  = document.querySelectorAll('.search-tab');
+  const mainPanes = document.querySelectorAll('.tab-pane');
 
-                // Hapus class active dari tab yang ditekan di grup ini
-                const parent = tab.parentElement;
-                parent.querySelectorAll(tabSelector).forEach(t => t.classList.remove("active"));
-                
-                // Cari semua pane yang sejenis dan hide
-                const targetPane = document.querySelector(targetSelector);
-                if(targetPane) {
-                    const paneParent = targetPane.parentElement;
-                    const siblings = paneParent.children;
-                    for (let sibling of siblings) {
-                        if (sibling.classList.contains("tab-pane") || sibling.classList.contains("driver-pane")) {
-                            sibling.classList.remove("active");
-                        }
-                    }
-                    targetPane.classList.add("active");
-                }
-                
-                // Aktifkan tab yang diklik
-                tab.classList.add("active");
-            });
-        });
-    }
+  if (mainTabs.length && mainPanes.length) {
+    mainTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        const targetSelector = this.getAttribute('data-target');
+        const targetPane     = document.querySelector(targetSelector);
 
-    // Jalankan setup untuk Tab Utama (Hotel vs Car)
-    setupTabs(".search-tab", ".tab-pane");
+        // tab state
+        mainTabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
 
-    // Jalankan setup untuk Tab Driver (With vs Without)
-    setupTabs(".driver-tab", ".driver-pane");
-  </script>
+        // pane state
+        mainPanes.forEach(p => p.classList.remove('active'));
+        if (targetPane) {
+          targetPane.classList.add('active');
+        }
+      });
+    });
+  }
+
+  /* ========== TAB DRIVER: WITH vs WITHOUT ========== */
+  const driverTabs  = document.querySelectorAll('.driver-tab');
+  const driverPanes = document.querySelectorAll('.driver-pane');
+
+  if (driverTabs.length && driverPanes.length) {
+    // default: tampilkan with-driver
+    driverPanes.forEach(p => p.style.display = 'none');
+    let defaultPane = document.querySelector('#with-driver') || driverPanes[0];
+    defaultPane.style.display = 'block';
+
+    driverTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        const targetSelector = this.getAttribute('data-target');
+        const targetPane     = document.querySelector(targetSelector);
+
+        // tab state
+        driverTabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+
+        // pane state (pakai inline style supaya gak bentrok CSS lain)
+        driverPanes.forEach(p => p.style.display = 'none');
+        if (targetPane) {
+          targetPane.style.display = 'block';
+        }
+      });
+    });
+  }
+});
+</script>
 <script>
   // ambil tombol dark mode
   const darkToggle = document.querySelector('.btn-dark-toggle');
@@ -518,6 +557,37 @@ if (!$result) {
       updateDarkLabel();
     });
   }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const tabs  = document.querySelectorAll('.driver-tab');
+  const panes = document.querySelectorAll('.driver-pane');
+
+  // Pastikan default: with-driver tampil
+  const defaultPane = document.querySelector('#with-driver');
+  if (defaultPane && !defaultPane.classList.contains('active')) {
+    defaultPane.classList.add('active');
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      // matikan semua tab & pane
+      tabs.forEach(function (t)    { t.classList.remove('active'); });
+      panes.forEach(function (pan) { pan.classList.remove('active'); });
+
+      // aktifkan tab yang diklik
+      this.classList.add('active');
+
+      const targetSelector = this.getAttribute('data-target');
+      const targetPane     = document.querySelector(targetSelector);
+
+      // hanya kalau ketemu pane-nya
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+    });
+  });
+});
 </script>
 </body>
 </html>

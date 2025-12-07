@@ -1,8 +1,9 @@
 <?php
-// midtrans.php khusus LaskarTrip (dipanggil dari pembayaran.php)
-
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 date_default_timezone_set('Asia/Jakarta');
+
 
 require 'koneksi.php';                     // koneksi database (mysqli $conn)
 require_once __DIR__ . '/vendor/autoload.php';  // library Midtrans via Composer
