@@ -54,30 +54,30 @@ if (in_array($transaction_status, ['capture', 'settlement'], true)) {
 // ================================
 if ($rent_id > 0) {
     // === SEWA MOBIL ===
-// SESUAIKAN nama kolom dengan struktur rent_orders kamu
-$payment_status = $app_status === 'success' ? 'paid' : $app_status;
+    // SESUAIKAN nama kolom dengan struktur rent_orders kamu
+    $payment_status = $app_status === 'success' ? 'paid' : $app_status;
 
-// kalau di rent_orders ADA kolom rent_status, pakai ini:
-$rent_status = $app_status === 'success' ? 'confirmed' : 'pending';
+    // kalau di rent_orders ADA kolom rent_status, pakai ini:
+    $rent_status = $app_status === 'success' ? 'confirmed' : 'pending';
 
-$sql = "UPDATE rent_orders
-        SET payment_status = ?, 
-            rent_status    = ?, 
-            total_harga    = ?
-        WHERE rent_id = ?";
+    $sql = "UPDATE rent_orders
+            SET payment_status = ?, 
+                rent_status    = ?, 
+                total_harga    = ?
+            WHERE rent_id = ?";
 
-if ($stmt = mysqli_prepare($conn, $sql)) {
-    mysqli_stmt_bind_param(
-        $stmt,
-        "ssii",
-        $payment_status,
-        $rent_status,
-        $gross_amount,
-        $rent_id
-    );
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssii",
+            $payment_status,
+            $rent_status,
+            $gross_amount,
+            $rent_id
+        );
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
     $headline_type = 'rent';
 } else {
@@ -86,12 +86,14 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     // diasumsikan ada kolom: status, payment_method, payment_reference, total_price
     $booking_status = $app_status === 'success' ? 'success' : $app_status;
 
+    // PERBAIKAN: Mengganti 'WHERE booking_id' menjadi 'WHERE id'
     $sql = "UPDATE bookings
             SET status = ?, 
                 payment_method = ?, 
                 payment_reference = ?, 
                 total_price = ?
-            WHERE booking_id = ?";
+            WHERE id = ?"; // <-- Di sini perubahannya (dari booking_id jadi id)
+            
     if ($stmt = mysqli_prepare($conn, $sql)) {
         mysqli_stmt_bind_param(
             $stmt,
