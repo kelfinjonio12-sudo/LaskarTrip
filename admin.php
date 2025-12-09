@@ -70,7 +70,12 @@ if (isset($_GET['hapus'])) {
     if ($id_hapus > 0) {
         $stmt = mysqli_prepare($conn, "DELETE FROM hotels WHERE id = ?");
         mysqli_stmt_bind_param($stmt, 'i', $id_hapus);
-        mysqli_stmt_execute($stmt);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            // Set session flash message untuk sukses hapus (opsional, jika ingin notifikasi setelah redirect)
+            $_SESSION['flash_message'] = "Data hotel berhasil dihapus.";
+        }
+        
         mysqli_stmt_close($stmt);
     }
 
@@ -279,8 +284,12 @@ if ($rent_page > $rent_pages) $rent_page = $rent_pages;
 $rent_offset      = ($rent_page - 1) * $rent_per_page;
 $rent_orders_page = array_slice($rent_orders, $rent_offset, $rent_per_page);
 
-// Data untuk form edit (sekarang di-handle lewat JS, tapi kita siapkan struktur PHP-nya)
-// Kita tidak lagi pakai $_GET['edit'] untuk render form langsung, tapi kirim data ke modal via JS.
+// Cek Flash Message untuk Hapus
+$flash_msg = '';
+if (isset($_SESSION['flash_message'])) {
+    $flash_msg = $_SESSION['flash_message'];
+    unset($_SESSION['flash_message']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -293,6 +302,8 @@ $rent_orders_page = array_slice($rent_orders, $rent_offset, $rent_per_page);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
     <style>
         :root {
@@ -824,9 +835,10 @@ $rent_orders_page = array_slice($rent_orders, $rent_offset, $rent_per_page);
                                         <i class="fa-solid fa-pen"></i>
                                     </button>
                                     
-                                    <a href="admin.php?hapus=<?= $hotel['id'] ?>" onclick="return confirm('Hapus hotel ini?')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">
+                                    <!-- Tombol Hapus dengan SweetAlert2 -->
+                                    <button onclick="confirmDelete(<?= $hotel['id'] ?>, '<?= htmlspecialchars($hotel['nama_hotel']) ?>')" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -1008,7 +1020,21 @@ $rent_orders_page = array_slice($rent_orders, $rent_offset, $rent_per_page);
         </div>
     </div>
 
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        // Cek Flash Message dari Session PHP
+        <?php if (!empty($flash_msg)): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '<?= addslashes($flash_msg) ?>',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        <?php endif; ?>
+
         function openEditor() {
             // Reset form ke mode "Tambah"
             document.getElementById('modalTitle').innerText = "Tambah Hotel Baru";
@@ -1041,6 +1067,25 @@ $rent_orders_page = array_slice($rent_orders, $rent_offset, $rent_per_page);
 
         function closeEditor() {
             document.getElementById('editorOverlay').style.display = 'none';
+        }
+
+        // Fungsi Konfirmasi Hapus dengan SweetAlert2
+        function confirmDelete(id, name) {
+            Swal.fire({
+                title: 'Hapus Hotel?',
+                text: `Anda yakin ingin menghapus data "${name}"? Data yang dihapus tidak dapat dikembalikan.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444', // Merah (btn-danger)
+                cancelButtonColor: '#6b7280', // Abu-abu
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `admin.php?hapus=${id}`;
+                }
+            });
         }
     </script>
 </body>
