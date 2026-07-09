@@ -32,7 +32,7 @@ Pastikan kamu sudah menginstall **XAMPP** (atau aplikasi server lokal sejenis) d
 Buka terminal (Git Bash atau CMD) di folder htdocs kamu, lalu jalankan:
 
 cd D:\\xampp\\htdocs  
-git clone \[https://github.com/kelfinjonio12-sudo/LaskarTrip.git\](https://github.com/kelfinjonio12-sudo/LaskarTrip.git)
+git clone \[https://github.com/LuckyFIN-1415/LaskarTrip.git\](https://github.com/LuckyFIN-1415/LaskarTrip.git)
 
 ### **3\. Konfigurasi Database**
 
@@ -61,6 +61,6 @@ http://localhost/LaskarTrip
 
 **Kelfin, Hengky Setiabudi, dan Raynold Antonio Sebastian**
 
-* GitHub: [kelfinjonio12-sudo](https://www.google.com/search?q=https://github.com/kelfinjonio12-sudo)
+* GitHub: [LuckyFIN-1415](https://www.google.com/search?q=https://github.com/LuckyFIN-1415)
 
 *Dibuat untuk keperluan tugas/proyek LaskarTrip.*
